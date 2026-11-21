@@ -2,8 +2,8 @@
 SetupIconFile=LiteratureDesk.ico
 AppId={{CE1EDCDB-C34B-4C6F-866A-EFCA9DC67B6A}
 AppName=文献正文获取工具
-AppVersion=1.1.2
-VersionInfoVersion=1.1.2.0
+AppVersion=1.1.3
+VersionInfoVersion=1.1.3.0
 VersionInfoDescription=文献正文获取工具安装程序
 DefaultDirName={localappdata}\Programs\ZoteroFullText
 DefaultGroupName=文献正文获取工具
@@ -12,7 +12,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
 UninstallDisplayIcon={app}\LiteratureDesk.exe
-OutputDir=release-1.1.2
+OutputDir=release-1.1.3
 OutputBaseFilename=Setup
 Compression=lzma2
 SolidCompression=yes
@@ -34,7 +34,7 @@ FinishedHeadingLabel=安装完成
 FinishedLabel=文献正文获取工具已安装。可点击“完成”启动，或从安装目录运行 LiteratureDesk.exe。
 
 [Files]
-Source: "desktop-shortcut.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "LiteratureDesk.ico"; DestDir: "{app}"; DestName: "desktop-shortcut.ico"; Flags: ignoreversion
 Source: "build\dist\LiteratureDesk\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "首次安装与使用.txt"; DestDir: "{app}"; Flags: ignoreversion
 
