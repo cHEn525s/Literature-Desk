@@ -30,7 +30,7 @@ class App:
         self.stop=threading.Event()
         self.last_export=None
         self.connect_until=0
-        window.title("文献正文获取工具")
+        window.title("Literature Desk")
         window.geometry("880x510")
         window.minsize(700,420)
         frame=ttk.Frame(window,padding=18)

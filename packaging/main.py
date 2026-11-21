@@ -20,7 +20,7 @@ def main():
     try:
         app=App(win,Path(os.environ["LOCALAPPDATA"])/"ZoteroFullText"/"workspace")
     except Exception as e:
-        messagebox.showerror("文献正文获取工具","无法打开工作目录，请检查是否已打开程序。\n"+str(e))
+        messagebox.showerror("Literature Desk","无法打开工作目录，请检查是否已打开程序。\n"+str(e))
         win.destroy()
         return 1
     win.mainloop()
