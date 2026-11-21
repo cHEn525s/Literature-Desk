@@ -2,7 +2,7 @@
 
 Windows 10/11 x64 桌面程序。把 BibTeX 和 Excel 题录按组送入专用 Zotero，优先复用已有正文，逐篇记录获取结果，最后交付 PDF 和仍缺正文的题录。
 
-**第一次使用**请登录获邀的 GitHub 账号，打开 [1.1.2 发行页](https://github.com/cHEn525s/Literature-Desk/releases/tag/v1.1.2)，下载标为 **异机验收包** 的 ZIP（文件名为 `LiteratureDesk-1.1.2-Windows-x64-demo.zip`）。里面有安装程序、两个练习文件和离线说明。
+**第一次使用**请打开 [1.1.2 发行页](https://github.com/cHEn525s/Literature-Desk/releases/tag/v1.1.2)，下载标为 **异机验收包** 的 ZIP（文件名为 `LiteratureDesk-1.1.2-Windows-x64-demo.zip`）。里面有安装程序、两个练习文件和离线说明。
 
 ## 一、前置准备
 
@@ -60,6 +60,6 @@ Windows 10/11 x64 桌面程序。把 BibTeX 和 Excel 题录按组送入专用 Z
 
 ## 六、版本与维护
 
-[发行页](https://github.com/cHEn525s/Literature-Desk/releases)按版本保存安装程序、完整应用、验收包和 SHA-256 校验值。当前标签为 v1.1.2。下载最新包即可得到绿色书本桌面和标题栏图标。私有仓库需由维护者邀请同门加入，登录有权限的账号后下载。
+[发行页](https://github.com/cHEn525s/Literature-Desk/releases)按版本保存安装程序、完整应用、验收包和 SHA-256 校验值。当前标签为 v1.1.2。下载最新包即可得到绿色书本桌面和标题栏图标。可直接将发行页链接分享给同门，无需登录即可下载。
 
 `intake` 提供输入解析、分组和本地匹配，`desktop` 提供桌面界面、执行引擎、桥接和导出，`packaging` 提供 Windows 入口与打包脚本。早期阶段脚本为开发验证记录，部分测试需开发者自备原始样例。日常功能演示使用`examples` 目录中的两份专用题录。
