@@ -6,7 +6,7 @@
   "applications": {
     "zotero": {
       "id": "step1@local.invalid",
-      "update_url": "https://example.invalid/step1/updates.json",
+      "update_url": "https://example.invalid/bridge-probe/updates.json",
       "strict_min_version": "10.0.8",
       "strict_max_version": "10.0.*"
     }

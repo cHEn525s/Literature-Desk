@@ -17,7 +17,7 @@ subprocess.run([sys.executable,"-m","PyInstaller","--clean","--noconfirm","--win
     "--specpath",str(build),
     "--add-data",str(here/"titlebar.png")+";.",
     "--distpath",str(build/"dist"),"--workpath",str(build/"analysis"),
-    "--paths",str(project/"step4"),"--paths",str(project/"step5"),
+    "--paths",str(project/"intake"),"--paths",str(project/"desktop"),
     str(here/"main.py")],check=True)
 app=build/"dist/LiteratureDesk"
 for resource in ["_tkinter.pyd","_tcl_data/init.tcl","_tk_data/tk.tcl"]:
@@ -25,13 +25,13 @@ for resource in ["_tkinter.pyd","_tcl_data/init.tcl","_tk_data/tk.tcl"]:
         raise RuntimeError(f"桌面界面组件未打包：{resource}")
 bridge=app/"bridge"
 bridge.mkdir(exist_ok=True)
-manifest=json.loads((project/"step1/manifest.json").read_text(encoding="utf-8"))
+manifest=json.loads((project/"bridge-probe/manifest.json").read_text(encoding="utf-8"))
 manifest.update(name="文献正文获取工具桥接",version="1.1.1",description="连接本机桌面程序和专用 Zotero 文库")
 manifest["applications"]["zotero"].update(id="desktop@local.invalid",update_url="https://example.invalid/zotero-fulltext/updates.json")
 with zipfile.ZipFile(bridge/"desktop@local.invalid.xpi","w",zipfile.ZIP_DEFLATED) as archive:
     archive.writestr("manifest.json",json.dumps(manifest,ensure_ascii=False))
-    archive.writestr("bootstrap.js",(project/"step4/bind.js").read_text(encoding="utf-8")+
-                     (project/"step5/bridge.js").read_text(encoding="utf-8"))
+    archive.writestr("bootstrap.js",(project/"intake/bind.js").read_text(encoding="utf-8")+
+                     (project/"desktop/bridge.js").read_text(encoding="utf-8"))
 notices=app/"licenses"
 notices.mkdir(exist_ok=True)
 for name in ["pypdf","openpyxl","et_xmlfile","bibtexparser","pyparsing","PyInstaller"]:

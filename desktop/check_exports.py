@@ -13,7 +13,7 @@ def lines(path):
 with TemporaryDirectory(dir=HERE/"local-run") as temp:
     root=Path(temp)
     (root/"batches").mkdir()
-    batch=read(HERE.parent/"step4/local-run/samples.json")
+    batch=read(HERE.parent/"intake/local-run/samples.json")
     files=[Path(s["path"]) for s in batch["sources"]]
     options={str(p):dict(group=p.stem,sheet="纳入记录",mapping={}) for p in files}
     job=create(root,files,"原始样例",[],options)
@@ -27,7 +27,7 @@ with TemporaryDirectory(dir=HERE/"local-run") as temp:
     orig=load_workbook(files[1],read_only=True)
     assert list(wb["纳入记录"].values)==list(orig["纳入记录"].values)
     wb.close();orig.close()
-    pair=read(HERE.parent/"step4/local-run/pair.json")
+    pair=read(HERE.parent/"intake/local-run/pair.json")
     raw=pair["records"][0]["raw_bib"]
     source=root/"add_1-589.bib"
     source.write_text("\n".join(raw.replace("{one,",f"{{key{i},",1) for i in range(588))+

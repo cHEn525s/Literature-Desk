@@ -16,7 +16,7 @@ for name in ("data", "real/results", "controlled/results"):
 plugin, = (Path(os.environ["APPDATA"]) / "Zotero/Zotero/Profiles").glob(
     "*/extensions/scihub@example.com.xpi")
 shutil.copyfile(plugin, extensions / plugin.name)
-manifest = json.loads((here.parent / "step1/manifest.json").read_text(encoding="utf-8"))
+manifest = json.loads((here.parent / "bridge-probe/manifest.json").read_text(encoding="utf-8"))
 manifest["name"] = "Step 3 queue probe"
 manifest["applications"]["zotero"]["id"] = "step3@local.invalid"
 with zipfile.ZipFile(extensions / "step3@local.invalid.xpi", "x") as archive:

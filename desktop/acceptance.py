@@ -16,7 +16,7 @@ inputs=root/"test-inputs"
 inputs.mkdir()
 out=root/"exports"
 out.mkdir()
-pair=read(HERE.parent/"step4/local-run/pair.json")
+pair=read(HERE.parent/"intake/local-run/pair.json")
 w=pair["works"][0]
 bib=inputs/"add_1-2.bib"
 bib.write_text("@string{jour = {Test Journal}}\n"+pair["records"][0]["raw_bib"]+

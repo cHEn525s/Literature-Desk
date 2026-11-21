@@ -15,7 +15,7 @@ extensions.mkdir(parents=True)
 source, = (Path(os.environ["APPDATA"]) / "Zotero/Zotero/Profiles").glob(
     "*/extensions/scihub@example.com.xpi")
 shutil.copyfile(source, extensions / source.name)
-manifest = json.loads((here.parent / "step1/manifest.json").read_text(encoding="utf-8"))
+manifest = json.loads((here.parent / "bridge-probe/manifest.json").read_text(encoding="utf-8"))
 manifest["name"] = "Step 2 single paper probe"
 manifest["applications"]["zotero"]["id"] = "step2@local.invalid"
 with zipfile.ZipFile(extensions / "step2@local.invalid.xpi", "x") as archive:

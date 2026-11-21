@@ -11,7 +11,7 @@ import uuid
 from unittest.mock import patch
 
 here=Path(__file__).resolve().parent
-sys.path.insert(0,str(here.parent/"step5"))
+sys.path.insert(0,str(here.parent/"desktop"))
 from desktop import App
 from engine import read,write
 from library_location import closed_profile,relocate
@@ -20,7 +20,7 @@ from delivery import export
 qa=here/"build"/("qa110-"+uuid.uuid4().hex[:8])
 root=qa/"workspace"
 root.mkdir(parents=True)
-prior=here.parent/"step4/local-run/data"
+prior=here.parent/"intake/local-run/data"
 source=root/"data"
 source.mkdir()
 shutil.copyfile(prior/"zotero.sqlite",source/"zotero.sqlite")
@@ -54,7 +54,7 @@ def choose(path):
         app.select()
     app.prepare();wait(lambda:not app.busy)
     assert app.job
-fixture=here.parent/"step4/local-run/fixture/group-A.bib"
+fixture=here.parent/"intake/local-run/fixture/group-A.bib"
 choose(fixture)
 job=app.job
 (root/"profile").mkdir(exist_ok=True)

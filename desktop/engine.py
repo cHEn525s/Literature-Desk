@@ -10,7 +10,7 @@ import zipfile
 from datetime import datetime, timezone
 
 HERE=Path(__file__).resolve().parent
-sys.path.insert(0,str(HERE.parent/"step4"))
+sys.path.insert(0,str(HERE.parent/"intake"))
 from intake import COLUMNS, digest, match_files, prepare
 from openpyxl import load_workbook
 
@@ -41,12 +41,12 @@ def setup(root):
     shutil.copyfile(plugins[0],extensions/plugins[0].name)
     if getattr(sys,"frozen",False): shutil.copyfile(bundled,installed)
     else:
-        manifest=read(HERE.parent/"step1/manifest.json")
+        manifest=read(HERE.parent/"bridge-probe/manifest.json")
         manifest["name"]="文献正文获取桌面桥接"
         manifest["applications"]["zotero"]["id"]="desktop@local.invalid"
         with zipfile.ZipFile(installed,"w") as z:
             z.writestr("manifest.json",json.dumps(manifest))
-            z.writestr("bootstrap.js",(HERE.parent/"step4/bind.js").read_text(encoding="utf-8")+
+            z.writestr("bootstrap.js",(HERE.parent/"intake/bind.js").read_text(encoding="utf-8")+
                        (HERE/"bridge.js").read_text(encoding="utf-8"))
     prefs={"extensions.zotero.useDataDir":True,"extensions.zotero.dataDir":str(root/"data"),
            "extensions.zotero.zoteroscihub.automatic_pdf_download":False,

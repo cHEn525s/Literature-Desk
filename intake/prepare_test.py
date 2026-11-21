@@ -40,12 +40,12 @@ ws.title="纳入记录"
 ws.append(["标题","PMID","来源记录号","分工","是否纳入"])
 ws.append([title,"16060722","001","甲","是"])
 wb.save(xlsx)
-pair=prepare([bib,xlsx],"纳入记录",COLUMNS,[here.parent/"step2/local-run/data/storage"],
+pair=prepare([bib,xlsx],"纳入记录",COLUMNS,[here.parent/"download-probe/local-run/data/storage"],
              "第四步 · 跨组复用",{})
 assert len(pair["works"])==1 and pair["works"][0]["local_pdf"]
 write(root/"pair.json",pair)
 write(root/"repeat.json",pair)
-manifest=json.loads((here.parent/"step1/manifest.json").read_text(encoding="utf-8"))
+manifest=json.loads((here.parent/"bridge-probe/manifest.json").read_text(encoding="utf-8"))
 manifest["name"]="Step 4 isolated intake"
 manifest["applications"]["zotero"]["id"]="step4@local.invalid"
 with zipfile.ZipFile(profile/"extensions/step4@local.invalid.xpi","x") as z:
