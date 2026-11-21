@@ -21,6 +21,14 @@ Windows 10/11 x64 桌面程序。把 BibTeX 和 Excel 题录按组送入专用 Z
 3. 点「连接专用 Zotero」。第一次连接会配置随包的自研桥接插件，并复制本机已有的下载插件。出现定位框时选择已安装的 zotero.exe。看到「专用库已连接」即可。
 4. 如选择发行页的 **应用 ZIP**，先完整解压到可写目录，再运行 LiteratureDesk.exe。请保留同目录内的运行库及 bridge 文件夹。批次进度保存在当前用户的本地工作区。
 
+### 首次使用或换网后，先测试下载地址
+
+「专用库已连接」表示 Literature Desk 已连上本机 Zotero。在线获取正文还取决于插件配置的地址和当前网络。换电脑、从校园网切换到家庭网络，或批次频繁停在人机验证时，先用一篇论文测试。
+
+1. **在当前电脑上先试网页。** 插件 2.0.1 默认使用 `https://sci-hub.ru/`，其设置页给出的备用入口为 `https://sci-hub.box/`，可能跳转到区域镜像。其他历史镜像包括 `https://sci-hub.st/` 和 `https://sci-hub.se/`。可达性会随网络和时间变化。在实际运行批次的网络上，用同一篇开放获取论文的 DOI（例如 `10.1371/journal.pmed.0020124`）测试能否打开对应论文页，选择访问稳定、较少反复要求人工验证的入口。遇到证书异常请跳过该地址。[插件发布页](https://github.com/ethanwillis/zotero-scihub/releases/tag/v2.0.1)
+2. **在专用 Zotero 中配置。** 从 Literature Desk 点「连接专用 Zotero」，在它打开的 Zotero 窗口进入「编辑 → 设置」，找到 Sci-Hub 插件设置，将选好的根地址（例如 `https://sci-hub.ru/`）填入 **Sci-Hub URL**。**Sci-Net URL** 用于另一个后备服务，保留原配置即可。保持 **Automatic PDF Download** 关闭，让 Literature Desk 按队列逐篇调度。
+3. **用一条题录验证实际下载。** 选一篇带 DOI、专用库和本地目录里都没有正文的开放获取论文，运行后点「导出交付」。逐条结果的 `method` 为 `downloaded` 且导出的 PDF 能打开，说明这次插件下载和正文核验均已成功。浏览器和 Zotero 的验证会话可能不同；若批次因验证暂停，在专用 Zotero 手动完成验证，再回到 Literature Desk 点「继续」。
+
 ## 三、用两个样例完成第一批
 
 1. 点「选择文件」，同时选择 **Bib验收-3.bib** 和 **Excel验收-7.xlsx**。父分类可填「首次练习」。
