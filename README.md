@@ -1,8 +1,8 @@
-# 文献正文获取工具
+# Literature Desk · 文献正文获取工具
 
 Windows 10/11 x64 桌面程序。把 BibTeX 和 Excel 题录按组送入专用 Zotero，优先复用已有正文，逐篇记录获取结果，最后交付 PDF 和仍缺正文的题录。
 
-**第一次使用**请登录获邀的 GitHub 账号，打开 [1.1.2 发行页](https://github.com/cHEn525s/Zotero-FullText-Desk/releases/tag/v1.1.2)，下载标为 **异机验收包** 的 ZIP（文件名以 `-demo.zip` 结尾）。里面有安装程序、两个练习文件和离线说明。
+**第一次使用**请登录获邀的 GitHub 账号，打开 [1.1.2 发行页](https://github.com/cHEn525s/Zotero-FullText-Desk/releases/tag/v1.1.2)，下载标为 **异机验收包** 的 ZIP（文件名为 `LiteratureDesk-1.1.2-Windows-x64-demo.zip`）。里面有安装程序、两个练习文件和离线说明。
 
 ## 一、前置准备
 
