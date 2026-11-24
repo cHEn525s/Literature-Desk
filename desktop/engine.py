@@ -211,7 +211,11 @@ def rpc(root,job,op,payload,progress=None):
         time.sleep(.15)
     result=read(reply)
     if "error" in result:
+        if result.get("verification"):
+            write(job/"verification.json",{"wid":cmd["wid"],"address":result["verification"]})
         pending.unlink()
+        if result.get("verification"):
+            raise RuntimeError("请打开验证页，处理后继续当前篇："+result["verification"])
         raise RuntimeError(result["error"])
     return cmd,result
 
@@ -256,4 +260,5 @@ def execute(root,job,stop,progress):
                           additional_pdfs=files[1:],acquisition_rule="readable_pdf",pdf_errors=problems,
                           at=datetime.now(timezone.utc).isoformat() if pdf else None))
         pending.unlink(missing_ok=True)
+        (job/"verification.json").unlink(missing_ok=True)
     return "已完成"

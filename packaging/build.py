@@ -26,7 +26,7 @@ for resource in ["_tkinter.pyd","_tcl_data/init.tcl","_tk_data/tk.tcl"]:
 bridge=app/"bridge"
 bridge.mkdir(exist_ok=True)
 manifest=json.loads((project/"bridge-probe/manifest.json").read_text(encoding="utf-8"))
-manifest.update(name="文献正文获取工具桥接",version="1.1.1",description="连接本机桌面程序和专用 Zotero 文库")
+manifest.update(name="文献正文获取工具桥接",version="1.3.0",description="连接本机桌面程序和专用 Zotero 文库")
 manifest["applications"]["zotero"].update(id="desktop@local.invalid",update_url="https://example.invalid/zotero-fulltext/updates.json")
 with zipfile.ZipFile(bridge/"desktop@local.invalid.xpi","w",zipfile.ZIP_DEFLATED) as archive:
     archive.writestr("manifest.json",json.dumps(manifest,ensure_ascii=False))
@@ -43,3 +43,4 @@ base=Path(sys.base_prefix)
 for f in [base/"LICENSE.txt",*base.glob("tcl/*/license.terms")]:
     if f.is_file():shutil.copyfile(f,notices/(f.parent.name+"-"+f.name))
 subprocess.run([str(build/"inno/ISCC.exe"),"/Qp",str(here/"installer.iss")],check=True)
+

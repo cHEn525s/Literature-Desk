@@ -11,6 +11,7 @@ from engine import HERE, COLUMNS, connected, create, copy_batch, execute, histor
 from openpyxl import load_workbook
 from delivery import export
 from library_location import relocate
+from site_manager import SiteManager, call as site_call
 
 class App:
     def __init__(self,window,root):
@@ -57,6 +58,7 @@ class App:
         button(bar,"导入预览",self.prepare)
         button(bar,"连接专用 Zotero",self.connect)
         button(bar,"文库位置",self.location)
+        button(bar,"站点管理",self.sites)
         self.table=ttk.Treeview(frame,columns=("file","sheet","group","count"),show="headings",height=8)
         for col,label,width in zip(("file","sheet","group","count"),("原文件","工作表","Zotero 子分类","原始条数"),(260,130,190,75)):
             self.table.heading(col,text=label)
@@ -73,6 +75,9 @@ class App:
         button(actions,"导出交付",self.deliver)
         button(actions,"用原题录新建批次",self.restart_batch)
         button(actions,"只重跑未取得",self.retry_missing)
+        self.verify_bar=ttk.Frame(frame)
+        ttk.Button(self.verify_bar,text="打开验证页",command=self.open_verification).pack(side="left")
+        ttk.Button(self.verify_bar,text="已完成验证，继续当前篇",command=self.start).pack(side="left")
         if (root/"current.json").exists():
             self.show_job(root/"batches"/read(root/"current.json"))
         self.window.protocol("WM_DELETE_WINDOW",self.close)
@@ -246,6 +251,19 @@ class App:
                 except Exception as e:self.status.set(str(e))
         except Exception as e:self.status.set(str(e))
 
+    def sites(self):
+        if self.job and self.phase!="aborted" and (self.job/"pending.json").exists():
+            messagebox.showinfo("站点管理","请先继续原请求并等待结果，或中止任务后切换。")
+            return
+        SiteManager(self)
+
+    def open_verification(self):
+        address=read(self.job/"verification.json")["address"]
+        def open_page():
+            site_call(self.root,"viewer",address)
+            return "end","请在专用 Zotero 完成验证，再点“已完成验证，继续当前篇”。"
+        self.worker(open_page,"viewer")
+
     def restart_batch(self):
         if self.job and self.phase in {"aborted","done"}:
             self.worker(lambda:("job",copy_batch(self.root,self.job)),"prepare")
@@ -259,7 +277,7 @@ class App:
         self.worker(prepare_retry,"prepare")
 
     def start(self):
-        if self.job:
+        if self.job and not self.busy:
             self.phase="running"
             write(self.job/"phase.json",self.phase)
             self.worker(lambda:("end",execute(self.root,self.job,self.stop,
@@ -312,6 +330,9 @@ class App:
             elif label=="导出交付": enabled=enabled and bool(self.job)
             elif label in {"分组与列映射","导入预览","本地 PDF 目录"}:enabled=enabled and bool(self.files) and not self.job
             b.configure(state="normal" if enabled else "disabled")
+        if self.job and self.phase=="paused" and not self.busy and (self.job/"verification.json").exists():
+            self.verify_bar.pack(anchor="w",pady=4)
+        else:self.verify_bar.pack_forget()
         self.timer=self.window.after(150,self.update)
 
 if __name__=="__main__":
