@@ -61,16 +61,24 @@ def export(job,directory):
             result=read(file) if file.exists() else {"reason":"batch_aborted" if (job/"aborted").exists() else "pending"}
             pdf=result.get("pdf")
             relative=None
+            additional=[]
             if pdf:
                 dest=pdfs/(wid+".pdf")
                 shutil.copyfile(pdf["path"],dest)
                 if digest(dest.read_bytes())!=pdf["sha256"]: raise ValueError("正文在核验后发生变化，请重新核验")
                 relative=dest.relative_to(out).as_posix()
+                for number,other in enumerate(result.get("additional_pdfs",[]),1):
+                    extra=out/"同条目其他PDF"/f"{wid}-{number}.pdf"
+                    extra.parent.mkdir(exist_ok=True)
+                    shutil.copyfile(other["path"],extra)
+                    if digest(extra.read_bytes())!=other["sha256"]: raise ValueError("其他 PDF 在取得后发生变化")
+                    additional.append(dict(path=extra.relative_to(out).as_posix(),sha256=other["sha256"]))
             outcomes[wid]=dict(status="obtained" if pdf else ("pending" if not file.exists() else
                 ("review" if result["reason"] in {"wrong_attachment","unverified_pdf","identity_conflict","library_identity_conflict"} else "missing")),
                 doi=w["doi"] or None,pmid=w["pmid"] or None,method=result.get("method"),
                 pdf_path=relative,pdf_sha256=pdf["sha256"] if pdf else None,
-                item_key=result.get("item"),verified_at=result.get("at"),reason_code=result.get("reason"))
+                item_key=result.get("item"),verified_at=result.get("at"),reason_code=result.get("reason"),
+                acquisition_rule=result.get("acquisition_rule"),additional_pdfs=additional,pdf_errors=result.get("pdf_errors",[]))
         by_source=defaultdict(list)
         for r in batch["records"]: by_source[r["source_id"]].append(r)
         used=set()

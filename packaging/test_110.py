@@ -1,5 +1,6 @@
 """Exercise terminal cancellation and relocation against disposable copies."""
 import json
+import gc
 from contextlib import closing
 from pathlib import Path
 import shutil
@@ -67,10 +68,20 @@ assert read(job/"phase.json")=="aborted"
 snap=export(job,qa)
 assert json.loads((snap/"逐条结果.jsonl").read_text(encoding="utf8"))["reason_code"]=="batch_aborted"
 app.close()
+del app, win
+gc.collect()
 win=tk.Tk();win.withdraw()
 app=App(win,root)
 assert app.phase=="aborted"
 choose(fixture)
 assert app.job!=job and app.phase=="ready"
+app.open_history();wait(lambda:not app.busy)
+dialog=next(widget for widget in win.winfo_children() if isinstance(widget,tk.Toplevel))
+tree=next(widget for widget in dialog.winfo_children() if widget.winfo_class()=="Treeview")
+tree.selection_set(job.name)
+next(widget for widget in dialog.winfo_children() if widget.winfo_class()=="TButton").invoke()
+assert app.job==job and read(root/"current.json")==job.name
+app.retry_missing();wait(lambda:not app.busy)
+assert app.job!=job and read(app.job/"batch.json")["retry_from"]==job.name
 app.close()
 print("PASS: cancel pending, export, reopen, switch batch; locked profile refused; database and stored PDF migrated with stable paths.")

@@ -4,9 +4,10 @@ from pathlib import Path
 import queue
 import threading
 import time
+from datetime import datetime
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk
-from engine import HERE, COLUMNS, connected, create, copy_batch, execute, launch, read, write
+from engine import HERE, COLUMNS, connected, create, copy_batch, execute, history, launch, read, write
 from openpyxl import load_workbook
 from delivery import export
 from library_location import relocate
@@ -50,6 +51,7 @@ class App:
         bar=ttk.Frame(frame)
         bar.pack(fill="x",pady=12)
         button(bar,"选择文件",self.select)
+        button(bar,"打开历史批次",self.open_history)
         button(bar,"分组与列映射",self.configure)
         button(bar,"本地 PDF 目录",self.folder)
         button(bar,"导入预览",self.prepare)
@@ -113,6 +115,44 @@ class App:
             self.show_files()
             self.status.set("核对工作表与分组后，点击“导入预览”。")
         except Exception as e: messagebox.showerror("输入文件",str(e))
+
+    def open_history(self):
+        if self.job and self.phase!="aborted" and (self.job/"pending.json").exists():
+            messagebox.showwarning("请求待确认","请先继续或中止当前批次，再切换批次。")
+            return
+        self.status.set("正在读取历史批次和取得数…")
+        self.worker(lambda:("history",history(self.root)),"history")
+
+    def choose_history(self,entries):
+        self.status.set("请选择需要打开的历史批次。" if entries else "还没有已保存的批次。")
+        if not entries: return
+        dialog=tk.Toplevel(self.window)
+        dialog.title("打开历史批次")
+        dialog.transient(self.window)
+        table=ttk.Treeview(dialog,columns=("time","file","phase","got","id"),show="headings",selectmode="browse")
+        for col,title,width in zip(table["columns"],("创建时间","原始文件","状态","已取得 / 原始条数","批次编号"),(145,280,75,130,85)):
+            table.heading(col,text=title)
+            table.column(col,width=width)
+        phases={"ready":"待开始","aborted":"已中止","done":"已完成","running":"待继续","paused":"已暂停"}
+        for stamp,job,phase,name,total,got in entries:
+            table.insert("","end",iid=job.name,values=(datetime.fromtimestamp(stamp).strftime("%Y-%m-%d %H:%M"),
+                         name,phases.get(phase,phase),f"{got} / {total}",job.name[:8]))
+        bar=ttk.Scrollbar(dialog,orient="vertical",command=table.yview)
+        table.configure(yscrollcommand=bar.set)
+        bar.pack(side="right",fill="y")
+        table.pack(fill="both",expand=True)
+        def choose(event=None):
+            selection=table.selection()
+            if selection:
+                job=self.root/"batches"/selection[0]
+                self.show_job(job)
+                write(self.root/"current.json",job.name)
+                self.files,self.options,self.folders=[],{},[]
+                dialog.destroy()
+        table.bind("<Double-1>",choose)
+        table.bind("<Return>",choose)
+        ttk.Button(dialog,text="打开选中批次",command=choose).pack(pady=6)
+        dialog.grab_set()
 
     def configure(self):
         selected=self.table.selection()
@@ -246,6 +286,7 @@ class App:
                 write(self.job/"phase.json",self.phase)
             self.operation=None
             if event=="job":self.show_job(value)
+            elif event=="history":self.choose_history(value)
             elif event=="export":
                 self.last_export=value
                 self.status.set("已导出："+str(value))

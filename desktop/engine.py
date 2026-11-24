@@ -11,7 +11,8 @@ from datetime import datetime, timezone
 
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE.parent/"intake"))
-from intake import COLUMNS, digest, match_files, prepare
+from intake import COLUMNS, digest, prepare
+from pypdf import PdfReader
 from openpyxl import load_workbook
 
 def read(path):
@@ -115,6 +116,46 @@ def copy_batch(root,old,missing_only=False):
     write(root/"current.json",new_id)
     return job
 
+def history(root):
+    entries=[]
+    for job in (root/"batches").glob("*"):
+        manifest=job/"batch.json"
+        if not manifest.is_file(): continue
+        batch=read(manifest)
+        state=job/"phase.json"
+        phase=read(state) if state.exists() else "ready"
+        if (job/"aborted").exists(): phase="aborted"
+        obtained=set()
+        for result in (job/"results").glob("*.json"):
+            if read(result).get("pdf"): obtained.add(result.stem)
+        records=batch["records"]
+        entries.append((manifest.stat().st_mtime,job,phase,
+                        "、".join(s["file"] for s in batch["sources"]),
+                        len(records),sum(r["work_id"] in obtained for r in records)))
+    return sorted(entries,reverse=True)
+
+def readable_attachments(candidates):
+    files=[]
+    seen=set()
+    problems=[]
+    for candidate in candidates:
+        try:
+            if not candidate.get("path"): raise ValueError("附件没有本地路径")
+            path=Path(candidate["path"])
+            with path.open("rb") as stream:
+                if b"%PDF-" not in stream.read(1024): raise ValueError("文件缺少 PDF 标识")
+                stream.seek(0)
+                reader=PdfReader(stream,strict=False)
+                if not len(reader.pages): raise ValueError("PDF 没有可打开的页面")
+                stream.seek(0)
+                checksum=digest(stream.read())
+            if checksum not in seen:
+                files.append(dict(path=str(path),sha256=checksum))
+                seen.add(checksum)
+        except Exception as error:
+            problems.append(str(error))
+    return files,problems
+
 def create(root,files,parent,folders,options):
     if not files or not parent.strip(): raise ValueError("请选择输入文件并填写父分类")
     if not getattr(sys,"frozen",False) and not shutil.which("pdftotext"): raise ValueError("找不到 pdftotext，无法核验正文")
@@ -197,25 +238,22 @@ def execute(root,job,stop,progress):
             sub={"parent":batch["parent"],"sources":[{"group":g} for g in w["groups"]],"works":[w]}
             _,row=rpc(root,job,"bind",{"wid":w["work_id"],"batch":sub},stage)
             item=row.get("item")
-        check=dict(w,local_pdf=None)
-        def inspect(candidates):
-            paths=[Path(c["path"]) for c in candidates if c.get("path") and Path(c["path"]).is_file()]
-            match_files([check],paths)
-        inspect(row.get("candidates",[]))
-        if not check["local_pdf"] and w["local_pdf"]:
-            inspect([w["local_pdf"]])
+        candidates=list(row.get("candidates",[]))
+        if w.get("local_pdf"): candidates.append(w["local_pdf"])
+        files,problems=readable_attachments(candidates)
         reason=row.get("review") or w.get("review")
-        if not reason and not check["local_pdf"]:
-            if row.get("candidates"): reason="wrong_attachment"
-            elif not w["doi"]: reason="no_doi"
+        if not reason and not files:
+            if not w["doi"]: reason="no_doi"
             else:
                 if old.get("op")!="acquire": pending.unlink()
                 _,reply=rpc(root,job,"acquire",{"wid":w["work_id"],"item":item,"doi":w["doi"]},stage)
                 method="downloaded"
-                inspect(reply.get("candidates",[]))
-                reason=reply.get("missing") or ("unverified_pdf" if not check["local_pdf"] else None)
-        pdf=check["local_pdf"]
+                files,errors=readable_attachments(reply.get("candidates",[]))
+                problems.extend(errors)
+                reason=reply.get("missing") or ("unverified_pdf" if not files else None)
+        pdf=files[0] if files else None
         write(target,dict(item=item,pdf=pdf,method=method if pdf else None,reason=reason,
+                          additional_pdfs=files[1:],acquisition_rule="readable_pdf",pdf_errors=problems,
                           at=datetime.now(timezone.utc).isoformat() if pdf else None))
         pending.unlink(missing_ok=True)
     return "已完成"

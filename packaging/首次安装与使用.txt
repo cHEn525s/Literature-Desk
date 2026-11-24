@@ -1,4 +1,10 @@
-Literature Desk 1.1.4　｜　Windows x64 首次安装与使用
+Literature Desk 1.2.0　｜　Windows x64 首次安装与使用
+
+
+从已有版本升级
+使用原 Windows 账户，关闭桌面端后运行 Setup.exe。打开「打开历史批次」，按原文件、时间和取得数选回已完成或已中止的整批记录。点「只重跑未取得」，核对保留篇数和待重跑篇数，再连接专用 Zotero 并点「开始」。新导出累计原始整批的结果。重新导入缺件 Bib 或 Excel 会创建独立批次。
+
+取得数按能打开的 PDF 统计。绑定到题录的摘要、扫描件也可计入，正文身份与完整性留给后续审核。同一条目有多份不同 PDF 时，其他文件在「同条目其他PDF」中，并在逐条结果中关联。散放在本地目录的 PDF 仍需先匹配到题录。
 
 安装
 1. 准备 Windows 10 或 11 的 x64 电脑。本机已验证的组合为 Zotero 10.0.8 和 Sci-Hub 插件 2.0.1。先在 Zotero 的插件管理器中确认已有下载插件。
@@ -27,3 +33,6 @@ Literature Desk 1.1.4　｜　Windows x64 首次安装与使用
 1. 在当前电脑上先试网页。 插件 2.0.1 默认使用 https://sci-hub.ru/，其设置页给出的备用入口为 https://sci-hub.box/，可能跳转到区域镜像。其他历史镜像包括 https://sci-hub.st/ 和 https://sci-hub.se/。可达性会随网络和时间变化。在实际运行批次的网络上，用同一篇开放获取论文的 DOI（例如 10.1371/journal.pmed.0020124）测试能否打开对应论文页，选择访问稳定、较少反复要求人工验证的入口。遇到证书异常请跳过该地址。插件发布页（https://github.com/ethanwillis/zotero-scihub/releases/tag/v2.0.1）
 2. 在专用 Zotero 中配置。 从 Literature Desk 点「连接专用 Zotero」，在它打开的 Zotero 窗口进入「编辑 → 设置」，找到 Sci-Hub 插件设置，将选好的根地址（例如 https://sci-hub.ru/）填入 Sci-Hub URL。Sci-Net URL 用于另一个后备服务，保留原配置即可。保持 Automatic PDF Download 关闭，让 Literature Desk 按队列逐篇调度。
 3. 用一条题录验证实际下载。 选一篇带 DOI、专用库和本地目录里都没有正文的开放获取论文，运行后点「导出交付」。逐条结果的 method 为 downloaded 且导出的 PDF 能打开，说明这次插件下载和正文核验均已成功。浏览器和 Zotero 的验证会话可能不同；若批次因验证暂停，在专用 Zotero 手动完成验证，再回到 Literature Desk 点「继续」。
+
+用 Codex 安装时可复制下面这段话：
+请先读取本目录的首次安装与使用说明，检查本机 Zotero 及插件准备情况，再使用本目录的 Setup.exe 为当前用户安装 Literature Desk。已有批次和文库请原位保留。安装后检查快捷方式及主窗口，等我确认再开始获取文献。

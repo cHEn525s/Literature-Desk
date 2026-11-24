@@ -2,8 +2,8 @@
 SetupIconFile=LiteratureDesk.ico
 AppId={{CE1EDCDB-C34B-4C6F-866A-EFCA9DC67B6A}
 AppName=Literature Desk
-AppVersion=1.1.4
-VersionInfoVersion=1.1.4.0
+AppVersion=1.2.0
+VersionInfoVersion=1.2.0.0
 VersionInfoDescription=Literature Desk 安装程序
 DefaultDirName={localappdata}\Programs\ZoteroFullText
 DefaultGroupName=Literature Desk
@@ -12,7 +12,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
 UninstallDisplayIcon={app}\LiteratureDesk.exe
-OutputDir=release-1.1.4
+OutputDir=release-1.2.0
 OutputBaseFilename=Setup
 Compression=lzma2
 SolidCompression=yes
@@ -88,3 +88,4 @@ begin
     ExpandConstant('{app}\首次安装与使用.txt'));
   RemoveDir(OldGroup);
 end;
+
